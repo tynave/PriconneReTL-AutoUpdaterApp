@@ -45,10 +45,6 @@ namespace PriconneReTLAutoUpdaterApp
             installer.StartCountdown += StartCountdown;
             helper.Log += OnLog;
 
-
-            //statusLabel.TextChanged += OnLabelTextChange;
-            //statusLabel.ControlAdded += OnLabelTextChange;
-
             this.MouseDown += OnMouseDown;
             this.MouseMove += OnMouseMove;
             this.MouseUp += OnMouseUp;
@@ -149,12 +145,12 @@ namespace PriconneReTLAutoUpdaterApp
 
         private async Task StartCountdown(string baseText)
         {
-            int countdown = 3; // Initial countdown value
+            int countdown = 3;
             var tcs = new TaskCompletionSource<bool>();
 
             // Create a new Timer
             System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
-            timer.Interval = 1000; // 1 second
+            timer.Interval = 1000;
             timer.Tick += (sender, e) =>
             {
                 button1.Visible = true;

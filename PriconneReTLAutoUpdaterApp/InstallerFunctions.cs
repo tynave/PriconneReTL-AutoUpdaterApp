@@ -178,11 +178,11 @@ namespace InstallerFunctions
         public async Task ExtractPatchFiles()
 
         {
-            if (!removeSuccess || !downloadSuccess) return;
-
             try
             {
-                
+
+                if (!removeSuccess || !downloadSuccess) return;
+
                 int counter = 0;
                 using (var zip = ZipFile.OpenRead(tempFile))
                 {
@@ -283,17 +283,17 @@ namespace InstallerFunctions
         public async Task RemovePatchFiles()
 
         {
-            if (downloadSuccess == false) 
-            {
-                extractSuccess = false;
-                return;
-            }
-
-
             await Task.Run(() =>
             {
                 try
                 {
+
+                    if (downloadSuccess == false)
+                    {
+                        extractSuccess = false;
+                        return;
+                    }
+
                     removeProgress = true;
 
                     string[] currentFiles = ProcessTree(priconnePath, localVersion).GetAwaiter().GetResult();
