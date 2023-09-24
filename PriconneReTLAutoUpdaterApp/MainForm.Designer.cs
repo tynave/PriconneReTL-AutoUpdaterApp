@@ -83,10 +83,10 @@
             this.gamePathLinkLabel.LinkColor = System.Drawing.Color.Black;
             this.gamePathLinkLabel.Location = new System.Drawing.Point(119, 9);
             this.gamePathLinkLabel.Name = "gamePathLinkLabel";
-            this.gamePathLinkLabel.Size = new System.Drawing.Size(106, 18);
+            this.gamePathLinkLabel.Size = new System.Drawing.Size(69, 18);
             this.gamePathLinkLabel.TabIndex = 3;
             this.gamePathLinkLabel.TabStop = true;
-            this.gamePathLinkLabel.Text = "<game path>";
+            this.gamePathLinkLabel.Text = "Not Set!";
             this.gamePathLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.gamePathLinkLabel_LinkClicked);
             // 
             // newPictureBox
@@ -99,6 +99,7 @@
             this.newPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.newPictureBox.TabIndex = 4;
             this.newPictureBox.TabStop = false;
+            this.newPictureBox.Visible = false;
             // 
             // latestVersionLinkLabel
             // 
@@ -109,10 +110,10 @@
             this.latestVersionLinkLabel.LinkColor = System.Drawing.Color.Black;
             this.latestVersionLinkLabel.Location = new System.Drawing.Point(145, 67);
             this.latestVersionLinkLabel.Name = "latestVersionLinkLabel";
-            this.latestVersionLinkLabel.Size = new System.Drawing.Size(89, 18);
+            this.latestVersionLinkLabel.Size = new System.Drawing.Size(69, 18);
             this.latestVersionLinkLabel.TabIndex = 5;
             this.latestVersionLinkLabel.TabStop = true;
-            this.latestVersionLinkLabel.Text = "20230915a";
+            this.latestVersionLinkLabel.Text = "Not Set!";
             this.latestVersionLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.latestVersionLinkLabel_LinkClicked);
             // 
             // statusLabel

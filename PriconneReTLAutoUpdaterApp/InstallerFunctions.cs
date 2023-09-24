@@ -21,14 +21,6 @@ namespace InstallerFunctions
     {
         Helper helper = new Helper();
 
-        private string githubAPI = Settings.Default.githubApi;
-        private string assetLink;
-        private string priconnePath;
-        private bool priconnePathValid;
-        private string localVersion;
-        private bool localVersionValid;
-        private string latestVersion;
-        private bool latestVersionValid;
         private string tempFile = Path.GetTempFileName();
         private bool removeSuccess = true;
         private bool downloadSuccess = true;
@@ -37,101 +29,11 @@ namespace InstallerFunctions
         public event Action<double, double, string> DownloadProgress;
         public event Action<string, string, bool> Log;
         public event Action<string> ErrorLog;
-        public event Action DisableStart;
         public event Action ProcessStart;
         public event Action ProcessFinish;
         public event Func<string, Task> StartCountdown;
 
-        public (string priconnePath, bool priconnePathValid) GetGamePath()
-        {
-            try
-            {
-                string cfgFileContent = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "dmmgameplayer5", "dmmgame.cnf"));
-                dynamic cfgJson = JsonConvert.DeserializeObject(cfgFileContent);
-
-                if (cfgJson != null && cfgJson.contents != null)
-                {
-                    foreach (var content in cfgJson.contents)
-                    {
-                        if (content.productId == "priconner")
-                        {
-                            priconnePath = content.detail.path;
-                            // priconnePath = "C:\\Test"; // -- set fixed path for testing purposes
-                            Log?.Invoke("Found Princess Connect Re:Dive in " + priconnePath, "info", true);
-                            return (priconnePath, priconnePathValid = true);
-                        }
-                    }
-                }
-                ErrorLog?.Invoke("Cannot find the game path! Did you install Princess Connect Re:Dive from DMMGamePlayer?");
-                return (priconnePath = "Not found", priconnePathValid = false);
-            }
-            catch (FileNotFoundException)
-            {
-                ErrorLog?.Invoke("Cannot find the DMMGamePlayer config file! Do you have DMMGamePlayer installed?");
-                return (priconnePath = "Not found", priconnePathValid = false);
-            }
-            catch (Exception ex)
-            {
-                ErrorLog?.Invoke("Error getting game path: " + ex.Message);
-                return (priconnePath = "ERROR!", priconnePathValid = false);
-            }
-        }
-        public (string localVersion, bool localVersionValid) GetLocalVersion()
-        {
-            try
-            {
-
-                if (!priconnePathValid)
-                {
-                    return (localVersion = "Unable to determine!", localVersionValid = false);
-                }
-
-                string versionFilePath = Path.Combine(priconnePath, "BepInEx", "Translation", "en", "Text", "Version.txt");
-
-                if (!File.Exists(versionFilePath))
-                {
-                    return (localVersion = "None", localVersionValid = false);
-                }
-                string rawVersionFile = File.ReadAllText(versionFilePath);
-                localVersion = System.Text.RegularExpressions.Regex.Match(rawVersionFile, @"\d{8}[a-z]?").Value;
-
-                if (localVersion == "")
-                {
-                    return (localVersion = "Invalid", localVersionValid = false);
-                }
-
-                return (localVersion, localVersionValid = true);
-
-            }
-            catch (Exception ex)
-            {
-                ErrorLog?.Invoke("Error getting local version: " + ex.Message);
-                return (localVersion = "ERROR!", localVersionValid = false);
-            }
-        }
-        public (string latestVersion, bool latestVersionValid) GetLatestRelease()
-        {
-            try
-            {
-                string releaseUrl = githubAPI + "/releases/latest";
-                using (WebClient client = new WebClient())
-                {
-                    client.Headers.Add("User-Agent", "PriconneTLUpdater");
-                    string response = client.DownloadString(releaseUrl);
-                    dynamic releaseJson = JsonConvert.DeserializeObject(response);
-                    string version = releaseJson.tag_name;
-                    assetLink = releaseJson.assets[0].browser_download_url;
-                    return (latestVersion = version, latestVersionValid = true);
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorLog?.Invoke("Error getting latest release: " + ex.Message);
-                return (latestVersion = null, latestVersionValid = false);
-            }
-        }
-
-        public async Task DownloadPatchFiles()
+        public async Task DownloadPatchFiles(string assetLink)
         {
             try
             {
@@ -175,8 +77,7 @@ namespace InstallerFunctions
             }
         }
 
-        public async Task ExtractPatchFiles()
-
+        public async Task ExtractPatchFiles(string priconnePath)
         {
             try
             {
@@ -280,7 +181,7 @@ namespace InstallerFunctions
             }
         }
 
-        public async Task RemovePatchFiles()
+        public async Task RemovePatchFiles(string priconnePath, string localVersion)
 
         {
             await Task.Run(() =>
@@ -325,7 +226,6 @@ namespace InstallerFunctions
                             DownloadProgress?.Invoke(counter, currentFiles.Length, "Removing old patch files...");
 
                         }
-
                     }
 
                     Log?.Invoke("File removal completed.", "info", true);
@@ -357,52 +257,21 @@ namespace InstallerFunctions
             }
         }
 
-        public async void ProcessOperation()
+        public async void ProcessOperation(string priconnePath, string localVersion, string latestVersion, string assetLink)
         {
-            string processName = null;
-            int versioncompare = localVersion.CompareTo(latestVersion);
-
             try
-            {
+            {        
+                Log?.Invoke("Found new version! Starting update...", "info", true);
 
-                if (!priconnePathValid)
-                {
-                    return;
-                }
+                var task = StartCountdown?.Invoke("Cancel Update");
+                if (task != null) await task;
 
-                if (!localVersionValid)
-                {
-                    Log?.Invoke("Local version invalid! Please reinstall the game manually!", "error", true);
-                    return;
-                }
+                ProcessStart?.Invoke();
 
-                if (!latestVersionValid)
-                {
-                    Log?.Invoke("Could not get latest version! Update failed!", "error", true);
-                    return;
-                }
-                if (versioncompare == 0)
-                {
-                    Log?.Invoke("You already have the latest version installed!", "success", true);
-                    return;
-                }
-
-                if (versioncompare < 0) 
-                {
-                    processName = "Update";
-                    Log?.Invoke("Found new version! Starting update...", "info", true);
-
-                    var task = StartCountdown?.Invoke("Cancel Update");
-                    if (task != null) await task;
-
-                    ProcessStart?.Invoke();
-
-                    await DownloadPatchFiles();
-                    await RemovePatchFiles();
-                    await ExtractPatchFiles();
-                    return;
-                }
-
+                await DownloadPatchFiles(assetLink);
+                await RemovePatchFiles(priconnePath, localVersion);
+                await ExtractPatchFiles(priconnePath);
+                return;
             }
             catch (Exception ex)
             {
@@ -413,13 +282,16 @@ namespace InstallerFunctions
             {
                 bool processSuccess = removeSuccess && downloadSuccess && extractSuccess;
 
-                if (processName != null) 
+                if (!processSuccess)
                 {
-                    if (!processSuccess) ErrorLog?.Invoke($"{processName} failed!"); else Log?.Invoke($"{processName} complete!", "success", true);
+                    ErrorLog?.Invoke($"Update failed!");
                 }
-
-                ProcessFinish?.Invoke();
-
+                else 
+                {
+                    Log?.Invoke($"Update complete!", "success", true);
+                    ProcessFinish?.Invoke();
+                }
+                    
                 var task = StartCountdown?.Invoke("Exit Updater");
                 if (task != null) await task;
 

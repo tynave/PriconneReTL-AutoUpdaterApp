@@ -21,21 +21,23 @@ namespace PriconneReTLAutoUpdaterApp
     {
         private Logger logger;
         private string priconnePath;
-        private bool priconnePathValid;
         private string latestVersion;
-        private bool latestVersionValid;
         private string localVersion;
-        private bool localVersionValid;
+        private string assetLink;
         PrivateFontCollection priconnefont = new PrivateFontCollection();
         private bool mouseDown;
         private Point lastLocation;
+        private string[] appArgs;
      
 
         Helper helper = new Helper();
         Installer installer = new Installer();
-        public MainForm()
+        public MainForm(string[] args)
         {
             InitializeComponent();
+            appArgs = args;
+
+            this.StartPosition = FormStartPosition.CenterScreen;
 
             installer.Log += OnLog;
             installer.ErrorLog += OnErrorLog;
@@ -62,24 +64,31 @@ namespace PriconneReTLAutoUpdaterApp
             helper.PriconneFont(priconnefont);
             helper.SetFontForAllControls(priconnefont, Controls);
 
-            (priconnePath, priconnePathValid) = installer.GetGamePath();
-            gamePathLinkLabel.Text = priconnePath;
+            if (appArgs.Length == 0)
+            {
+                logger.Log("This application cannot be run standalone!", "error", true);
+                button1.Visible = true;
+                return;
+            }
 
-            (latestVersion, latestVersionValid) = installer.GetLatestRelease();
-            latestVersionLinkLabel.Text = latestVersionValid ? latestVersion : "ERROR!";
+            else
+            {
+                priconnePath = appArgs[0];
+                gamePathLinkLabel.Text = priconnePath;
 
-            UpdateUI();
+                latestVersion = appArgs[2];
+                latestVersionLinkLabel.Text = latestVersion;
+
+                assetLink = appArgs[3];
+
+                localVersion = appArgs[1];
+                localVersionLabel.Text = "Current (Local) Version: " + localVersion;
+
+                newPictureBox.Visible = true;
+            }
 
         }
-        private void UpdateUI()
-        {
-            (localVersion, localVersionValid) = installer.GetLocalVersion();
 
-            localVersionLabel.Text = "Current (Local) Version: " + localVersion;
-
-            newPictureBox.Visible = localVersion == latestVersion ? false : true;
-
-        }
         // Events
         private void OnLog(string message, string color, bool writeToStatus = false)
         {
@@ -95,7 +104,6 @@ namespace PriconneReTLAutoUpdaterApp
             {
                 logger.Error(message);
             }));
-
         }
 
         public void OnDownloadProgress(double currentValue, double maxValue, string status /*Image image*/)
@@ -183,7 +191,8 @@ namespace PriconneReTLAutoUpdaterApp
 
         private void OnProcessFinish()
         {
-            // Placeholder event future updates
+            localVersionLabel.Text = "Current (Local) Version: " + latestVersion;
+            newPictureBox.Visible = false;
         }
 
 
@@ -191,18 +200,15 @@ namespace PriconneReTLAutoUpdaterApp
         {
             this.Activate();
             InitializeUI();
-            installer.ProcessOperation();
+            if (appArgs.Length > 0) installer.ProcessOperation(priconnePath, localVersion, latestVersion, assetLink);
 
         }
 
         private void gamePathLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (priconnePathValid)
-            {
-                ProcessStartInfo startInfo = new ProcessStartInfo("explorer.exe");
-                startInfo.Arguments = priconnePath;
-                Process.Start(startInfo);
-            }
+             ProcessStartInfo startInfo = new ProcessStartInfo("explorer.exe");
+             startInfo.Arguments = priconnePath;
+             Process.Start(startInfo);
         }
 
         private void latestVersionLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
