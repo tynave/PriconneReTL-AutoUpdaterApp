@@ -12,7 +12,7 @@ namespace PriconneReTLAutoUpdaterApp.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.7.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.8.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -38,6 +38,7 @@ namespace PriconneReTLAutoUpdaterApp.Properties {
 <ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
   <string>BepInEx/config/AutoTranslatorConfig.ini</string>
   <string>BepInEx/config/BepInEx.cfg</string>
+  <string>BepInEx/config/PriconneTLFixup.cfg</string>
 </ArrayOfString>")]
         public global::System.Collections.Specialized.StringCollection configFiles {
             get {
