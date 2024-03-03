@@ -35,6 +35,7 @@ Also, the same as the PriconneReTL-Installer, this autoupdater file does not tou
   - Configuration files:
       - AutoTranslatorConfig.ini
       - BepInEx.cfg
+      - PriconneTLFixup.cfg (> 1.0.1)
   - User **created** files in the patch folders  
 (Please note that due to the logic of the operations, any **user edited** files that originally are part of the translation patch **DO NOT** persist.
     So if you would like to make personal alterations of the patch files and want to keep those across the versions, it is advised to have those on seperate files.)
