@@ -22,7 +22,9 @@ namespace PriconneReTLAutoUpdaterApp
         private Logger logger;
         private string priconnePath;
         private string latestVersion;
+        private bool latestVersionValid;
         private string localVersion;
+        private bool localVersionValid;
         private string assetLink;
         PrivateFontCollection priconnefont = new PrivateFontCollection();
         private bool mouseDown;
@@ -76,15 +78,14 @@ namespace PriconneReTLAutoUpdaterApp
                 priconnePath = appArgs[0];
                 gamePathLinkLabel.Text = priconnePath;
 
-                latestVersion = appArgs[2];
+                (latestVersion, latestVersionValid, assetLink) = installer.GetLatestRelease(Settings.Default.githubApi);
                 latestVersionLinkLabel.Text = latestVersion;
 
-                assetLink = appArgs[3];
 
-                localVersion = appArgs[1];
+                (localVersion, localVersionValid) = installer.GetLocalVersion(priconnePath);
                 localVersionLabel.Text = "Current (Local) Version: " + localVersion;
 
-                newPictureBox.Visible = true;
+                newPictureBox.Visible = localVersion == latestVersion ? false : true;
             }
 
         }

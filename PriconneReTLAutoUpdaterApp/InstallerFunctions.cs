@@ -21,6 +21,11 @@ namespace InstallerFunctions
     {
         Helper helper = new Helper();
 
+        private string latestVersion;
+        private bool latestVersionValid;
+        private string localVersion;
+        private bool localVersionValid;
+        private string assetLink;
         private string tempFile = Path.GetTempFileName();
         private bool removeSuccess = true;
         private bool downloadSuccess = true;
@@ -33,6 +38,57 @@ namespace InstallerFunctions
         public event Action ProcessFinish;
         public event Func<string, Task> StartCountdown;
 
+        public (string localVersion, bool localVersionValid) GetLocalVersion(string priconnePath)
+        {
+            try
+            {
+
+                string versionFilePath = Path.Combine(priconnePath, "BepInEx", "Translation", "en", "Text", "Version.txt");
+
+                if (!File.Exists(versionFilePath))
+                {
+                    return (localVersion = "None", localVersionValid: false);
+                }
+                string rawVersionFile = File.ReadAllText(versionFilePath);
+                Match match = Regex.Match(rawVersionFile, @"\d{8}[a-z]?");
+
+                if (match == null || !match.Success)
+                {
+                    return (localVersion = "Invalid", localVersionValid: false);
+                }
+                localVersion = match.Value;
+                return (localVersion, localVersionValid = true);
+
+            }
+            catch (Exception ex)
+            {
+                ErrorLog?.Invoke("Error getting local version: " + ex.Message);
+                return (localVersion = "ERROR!", localVersionValid = false);
+            }
+        }
+
+        public (string latestVersion, bool latestVersionValid, string assetLink) GetLatestRelease(string githubAPI)
+        {
+
+            try
+            {
+                string releaseUrl = githubAPI + "/releases/latest";
+                using (WebClient client = new WebClient())
+                {
+                    client.Headers.Add("User-Agent", "PriconneReTLInstaller");
+                    string response = client.DownloadString(releaseUrl);
+                    dynamic releaseJson = JsonConvert.DeserializeObject(response);
+                    string version = releaseJson.tag_name;
+                    assetLink = releaseJson.assets[0].browser_download_url;
+                    return (latestVersion = version, latestVersionValid = true, assetLink);
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLog?.Invoke("Error getting latest release: " + ex.Message);
+                return (latestVersion = null, latestVersionValid = false, null);
+            }
+        }
         public async Task DownloadPatchFiles(string assetLink)
         {
             try

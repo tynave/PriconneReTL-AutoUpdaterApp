@@ -39,6 +39,7 @@ namespace PriconneReTLAutoUpdaterApp.Properties {
   <string>BepInEx/config/AutoTranslatorConfig.ini</string>
   <string>BepInEx/config/BepInEx.cfg</string>
   <string>BepInEx/config/PriconneTLFixup.cfg</string>
+  <string>BepInEx/config/com.sinai.unityexplorer.cfg</string>
 </ArrayOfString>")]
         public global::System.Collections.Specialized.StringCollection configFiles {
             get {
@@ -55,6 +56,10 @@ namespace PriconneReTLAutoUpdaterApp.Properties {
   <string>BepInEx/Translation/en/Text/_Preprocessors.txt</string>
   <string>BepInEx/Translation/en/Text/_Substitutions.txt</string>
   <string>winhttp.dll</string>
+  <string>BepInEx/plugins/PriconneTLFixup.dll</string>
+  <string>BepInEx/plugins/XUnity.AutoTranslator/XUnity.AutoTranslator.Plugin.Core.dll</string>
+  <string>BepInEx/plugins/UnityExplorer.BIE.Unity.IL2CPP.CoreCLR.dll</string>
+  <string>BepInEx/plugins/UniverseLib.BIE.IL2CPP.Interop.dll</string>
 </ArrayOfString>")]
         public global::System.Collections.Specialized.StringCollection ignoreFiles {
             get {

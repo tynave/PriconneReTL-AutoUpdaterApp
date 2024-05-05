@@ -11,6 +11,7 @@
   &lt;string&gt;BepInEx/config/AutoTranslatorConfig.ini&lt;/string&gt;
   &lt;string&gt;BepInEx/config/BepInEx.cfg&lt;/string&gt;
   &lt;string&gt;BepInEx/config/PriconneTLFixup.cfg&lt;/string&gt;
+  &lt;string&gt;BepInEx/config/com.sinai.unityexplorer.cfg&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
     <Setting Name="ignoreFiles" Type="System.Collections.Specialized.StringCollection" Scope="Application">
@@ -21,6 +22,10 @@
   &lt;string&gt;BepInEx/Translation/en/Text/_Preprocessors.txt&lt;/string&gt;
   &lt;string&gt;BepInEx/Translation/en/Text/_Substitutions.txt&lt;/string&gt;
   &lt;string&gt;winhttp.dll&lt;/string&gt;
+  &lt;string&gt;BepInEx/plugins/PriconneTLFixup.dll&lt;/string&gt;
+  &lt;string&gt;BepInEx/plugins/XUnity.AutoTranslator/XUnity.AutoTranslator.Plugin.Core.dll&lt;/string&gt;
+  &lt;string&gt;BepInEx/plugins/UnityExplorer.BIE.Unity.IL2CPP.CoreCLR.dll&lt;/string&gt;
+  &lt;string&gt;BepInEx/plugins/UniverseLib.BIE.IL2CPP.Interop.dll&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
     <Setting Name="ignoreFolders" Type="System.Collections.Specialized.StringCollection" Scope="Application">
