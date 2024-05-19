@@ -3,4 +3,4 @@ A modified version of the [PriconneReTL-Installer](https://github.com/tynave/Pri
 
 ## WARNING!  
 ## As of PriconneReTL version 20240430a, due to the changes in the modloader framework, this app and the [PriconneReTL-AutoUpdater](https://github.com/tynave/PriconneReTL-AutoUpdater) patcher plugin is not longer functional and has been deprecated.
-Please use the [PriconneReTL-Installer version 2.0.0 or later](https://github.com/tynave/PriconneReTL-Installer/releases) and it's autoupdater function!
+## Please use the [PriconneReTL-Installer version 2.0.0 or later](https://github.com/tynave/PriconneReTL-Installer/releases) and it's autoupdater function!
